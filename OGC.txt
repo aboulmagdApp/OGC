@@ -1,0 +1,39 @@
+WMS example :-
+---------------
+http://arcgis.api.luyutao.com/arcgis_js_v317_sdk/arcgis_js_api/sdk/jssamples/layers_wfs.html
+https://www.arcgis.com/home/webmap/viewer.html?webmap=4d852e3e8f65485688def3211bf7f277
+
+
+
+
+----------------------
+WMS services :-
+----------------------
+- http://apollo.cdngiportal.co.za/erdas-iws/ogc/wms/CDNGI_PORTAL_BACKDROP?request=GetCapabilities&service=WMS
+
+
+
+
+
+---------------
+WFS services :-
+---------------
+- https://dservices.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/services/JapanPrefectures2018/WFSServer?request=GetCapabilities&service=WFS&version=2.0.0
+- https://sampleserver6.arcgisonline.com/arcgis/services/SampleWorldCities/MapServer/WFSServer?request=GetCapabilities&service=WFS
+
+
+
+
+-------------------------
+arcgisOnline services :-
+-------------------------
+- https://sampleserver6.arcgisonline.com/arcgis/rest/services
+
+
+
+
+
+---------------------------
+Introduction to WMS
+---------------------------
+https://www.ogc.org/standards/wms/introduction

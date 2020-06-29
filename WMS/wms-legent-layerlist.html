@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>WMSLayer - 4.15</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.15/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.15/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/WMSLayer",
+		"esri/widgets/Search",
+		 "esri/widgets/LayerList",
+        "esri/widgets/Legend",
+		"esri/tasks/QueryTask", 
+		"esri/tasks/support/Query",
+		 "esri/config",
+      ], function(Map, MapView, WMSLayer, Search,LayerList, Legend, QueryTask, Query,  esriConfig) {
+	  
+		esriConfig.request.corsEnabledServers.push("geobretagne.fr");
+		var url = "https://ows.terrestris.de/osm/service";
+        var urlwms = "https://geobretagne.fr/geoserver/onema/wms";
+		
+        var layer = new WMSLayer({
+          url: url,
+          sublayers: [
+            {
+              name: "OSM-WMS"
+            }
+          ]
+        });
+		
+		var layer2 = new WMSLayer({
+          url: urlwms
+        });
+
+        var map = new Map({
+          basemap: {
+            baseLayers: [layer]
+          },
+          layers: [layer2]
+        });
+
+        var mapView = new MapView({
+          container: "viewDiv",
+          map: map
+        });
+        
+    	var searchWidget = new Search({
+		  view: mapView,
+		  allPlaceholder: "wms search",
+		  //includeDefaultSources: false,
+		  sources: [
+		   {
+			  layer: layer2,
+			  searchFields: ["Title"],
+			  displayField: "Title",
+			  exactMatch: false,
+			  outFields: ["*"],
+			  name: "title",
+			  placeholder: "example"
+			}
+		  ]
+		});
+		
+		mapView.ui.add(searchWidget, {
+		  position: "top-right",
+		  index: 2
+		});
+		
+		var layerlist = new LayerList({
+          view: mapView
+        });
+		
+        mapView.ui.add(layerlist, "bottom-right");
+
+        var legend = new Legend({
+          view: mapView
+        });
+		
+        mapView.ui.add(legend, "bottom-left");
+
+		var queryTask = new QueryTask({
+			url: layer2
+		});
+		
+		 var query = new Query();
+		  query.returnGeometry = true;
+		  query.outFields = ["*"];
+		  query.where = "1=1";
+		
+		queryTask.execute(query).then(function(results){
+		console.log(results.features);
+	  });
+
+        console.log(mapView);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>

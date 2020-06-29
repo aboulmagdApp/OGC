@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Map with WMS</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/3.22/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/3.22/esri/css/esri.css">
+  <style>
+    html, body, #map {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script src="https://js.arcgis.com/3.22/"></script>
+
+  <script>
+    var map;
+    require([
+      'esri/map', 'esri/layers/WMSLayer', 'esri/layers/WMSLayerInfo', 'esri/geometry/Extent',
+      'dojo/_base/array', 'dojo/dom', 'dojo/dom-construct', 'dojo/parser', "esri/dijit/LayerList",
+      'dijit/layout/BorderContainer', 'dijit/layout/ContentPane', 'dojo/domReady!'
+    ], function(Map, WMSLayer, WMSLayerInfo, Extent, array, dom, domConst, parser, LayerList) {
+      parser.parse();
+
+      map = new Map('map', {
+        basemap: 'streets',
+        center: [-96, 37],
+        zoom: 4
+      });
+
+      var amana = new WMSLayerInfo({
+        name: '0',
+        title: '1الامانة',
+        queryable: true,
+        showPopup: true
+      });
+	  
+      var baladia = new WMSLayerInfo({
+        name: '1',
+        title: 'حدود البلديات'
+      });
+	  
+	  var layer3 = new WMSLayerInfo({
+        name: '2',
+        title: 'الاحياء'
+      });
+	  
+	  var Growth = new WMSLayerInfo({
+        name: '3',
+        title: 'النطاق العمرانى 1450'
+      });
+	  
+     var Growth1445 = new WMSLayerInfo({
+        name: '4',
+        title: 'النطاق العمراني 1445'
+      });
+      
+      var resourceInfo = {
+        extent: new Extent(-126.40869140625, 31.025390625, -109.66552734375, 41.5283203125, {
+          wkid: 4326
+        }),
+        layerInfos: [amana, baladia, layer3, Growth, Growth1445]
+      };
+
+      var wmsLayer = new WMSLayer('http://192.168.80.45:6080/arcgis/services/Shamalya/geoexplorer_Arar/MapServer/WMSServer', {
+        resourceInfo: resourceInfo,
+        visibleLayers: ['0','1','2', '3', '4']
+      });
+	  
+      map.addLayers([wmsLayer]);
+
+      console.log(wmsLayer);
+
+
+
+
+      var details = dom.byId('details');
+      domConst.place('<b>Layers</b>:', details);
+      var ul = domConst.create('ul', null, details);
+      array.forEach(wmsLayer.layerInfos, function(layerInfo) {
+        domConst.create('li', { innerHTML: layerInfo.title }, ul);
+      });
+      domConst.place('<b>WMS Version</b>:' + wmsLayer.version + '<br />', details);
+    });
+  </script>
+</head>
+
+<body class="claro">
+  <div id="content"
+       data-dojo-type="dijit.layout.BorderContainer"
+       data-dojo-props="design:'headline', gutters:true"
+       style="width: 100%; height: 100%; margin: 0;">
+
+    <div id="details"
+         data-dojo-type="dijit.layout.ContentPane"
+         data-dojo-props="region:'left', splitter:true"
+         style="overflow:auto; width:200px;">
+    </div>
+	
+	
+
+    <div id="map"
+         data-dojo-type="dijit.layout.ContentPane"
+         data-dojo-props="region:'center'"
+         style="overflow:hidden;">
+    </div>
+
+  </div>
+</body>
+</html>
